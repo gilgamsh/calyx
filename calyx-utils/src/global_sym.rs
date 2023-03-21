@@ -1,18 +1,16 @@
 //! Defines a global symbol type and its associated interning pool
-use serde::Serialize;
 use std::{mem, sync};
 use string_interner::{
     backend::BucketBackend, symbol::SymbolU32, StringInterner,
 };
 
 /// A Globally interned symbol.
-// #[cfg_attr(
-//     feature = "serialize",
-//     derive(serde::Serialize),
-//     serde(into = "&'static str")
-// )]
-#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize)]
-#[serde(into = "&'static str")]
+#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(
+    feature = "serialize",
+    derive(serde::Serialize),
+    serde(into = "&'static str")
+)]
 pub struct GSym(SymbolU32);
 
 type Pool = StringInterner<BucketBackend>;
@@ -80,10 +78,10 @@ impl std::fmt::Display for GSym {
     }
 }
 
-// #[cfg(feature = "serialize")]
+#[cfg(feature = "serialize")]
 struct StrVisitor;
 
-// #[cfg(feature = "serialize")]
+#[cfg(feature = "serialize")]
 impl<'de> serde::de::Visitor<'de> for StrVisitor {
     type Value = GSym;
 
@@ -102,7 +100,7 @@ impl<'de> serde::de::Visitor<'de> for StrVisitor {
     }
 }
 
-// #[cfg(feature = "serialize")]
+#[cfg(feature = "serialize")]
 impl<'de> serde::Deserialize<'de> for GSym {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where

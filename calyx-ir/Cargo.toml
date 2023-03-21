@@ -3,6 +3,10 @@ name = "calyx-ir"
 version = "0.1.0"
 edition = "2021"
 
+[features]
+default = []
+serialize = ["dep:serde", "dep:serde_with"]
+
 [dependencies]
 log.workspace = true
 petgraph.workspace = true
@@ -10,8 +14,9 @@ string-interner.workspace = true
 itertools.workspace = true
 linked-hash-map.workspace = true
 smallvec.workspace = true
-serde.workspace = true
-serde_with.workspace = true
 
 calyx-utils = { path = "../calyx-utils" }
 calyx-frontend = { path = "../calyx-frontend" }
+
+serde = { workspace = true, features = ["derive"], optional = true }
+serde_with = { workspace = true, optional = true }

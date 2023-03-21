@@ -1,7 +1,5 @@
 use calyx_utils::{CalyxResult, GPosIdx, Id, WithPos};
 use linked_hash_map::LinkedHashMap;
-use serde::Serialize;
-use serde_with::{serde_as, SerializeAs};
 use std::{
     convert::TryFrom,
     ops::{Index, IndexMut},
@@ -9,6 +7,7 @@ use std::{
 
 struct SerLinkedHashMapIdu64;
 
+#[cfg(feature = "serialize")]
 impl SerializeAs<LinkedHashMap<Id, u64>> for SerLinkedHashMapIdu64 {
     fn serialize_as<S>(
         value: &LinkedHashMap<Id, u64>,
@@ -22,11 +21,11 @@ impl SerializeAs<LinkedHashMap<Id, u64>> for SerLinkedHashMapIdu64 {
 }
 
 /// Attributes associated with a specific IR structure.
-#[serde_as]
-#[derive(Debug, Clone, Serialize)]
+#[derive(Debug, Clone)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize), serde_as)]
 pub struct Attributes {
     /// Mapping from the name of the attribute to its value.
-    #[serde_as(as = "SerLinkedHashMapIdu64")]
+    #[cfg_attr(feature = "serialize", serde_as(as = "SerLinkedHashMapIdu64"))]
     pub(super) attrs: LinkedHashMap<Id, u64>,
     /// Source location information for the item
     span: GPosIdx,
